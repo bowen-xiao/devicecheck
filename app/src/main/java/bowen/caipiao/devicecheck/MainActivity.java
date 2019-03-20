@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.ScreenUtils;
@@ -23,10 +24,13 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import java.util.Hashtable;
 
 public class MainActivity extends AppCompatActivity {
+    MainActivity context;
     ImageView mZxingCode;
     TextView mZxingStr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = this;
         super.onCreate(savedInstanceState);
         ScreenUtils.setFullScreen(this);
         setContentView(R.layout.activity_main);
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setImageSize(String androidID) {
         //取到屏幕宽高
-        int width =  ScreenUtils.getScreenWidth() > ScreenUtils.getScreenHeight() ? ScreenUtils.getScreenHeight() : ScreenUtils.getScreenWidth();
+        int width = ScreenUtils.getScreenWidth() > ScreenUtils.getScreenHeight() ? ScreenUtils.getScreenHeight() : ScreenUtils.getScreenWidth();
 //        屏幕宽的80%
         width *= 0.66f;
         Bitmap zxingBitmap = createQRCodeBitmap(androidID, width, width, "UTF-8", "L", "1", Color.BLACK, Color.WHITE);
@@ -56,8 +60,20 @@ public class MainActivity extends AppCompatActivity {
         mZxingCode.setImageBitmap(zxingBitmap);
 
         //隐藏,可以隐藏但又显示出来了
-        hideBottomUIMenu();
+       // hideBottomUIMenu();
+
+        //已经隐藏，但显示不了
+        CloseBarUtil.closeBar();
+        mZxingCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context,"点击事件",Toast.LENGTH_SHORT).show();
+                CloseBarUtil.showBar2();
+            }
+        });
     }
+
+
 
     private void initView() {
         mZxingCode = this.<ImageView>findViewById(R.id.device_id_zxing);
@@ -77,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
      * @param color_white            白色色块
      * @return BitMap
      */
-    public static Bitmap createQRCodeBitmap(String content, int width,int height,
-                                            String character_set,String error_correction_level,
-                                            String margin,int color_black, int color_white) {
+    public static Bitmap createQRCodeBitmap(String content, int width, int height,
+                                            String character_set, String error_correction_level,
+                                            String margin, int color_black, int color_white) {
         // 字符串内容判空
         if (TextUtils.isEmpty(content)) {
             return null;
@@ -128,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //隐藏虚拟按键，并且全屏
     protected void hideBottomUIMenu() {
-        //隐藏虚拟按键，并且全屏
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
             View v = this.getWindow().getDecorView();
             v.setSystemUiVisibility(View.GONE);
@@ -141,4 +157,4 @@ public class MainActivity extends AppCompatActivity {
             decorView.setSystemUiVisibility(uiOptions);
         }
     }
-    }
+}

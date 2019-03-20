@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:clickable="true"
             android:adjustViewBounds="true"
             android:layout_margin="20dp"
             android:padding="10dp"
