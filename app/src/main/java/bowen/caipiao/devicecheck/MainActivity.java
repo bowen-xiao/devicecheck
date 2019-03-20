@@ -2,6 +2,7 @@ package bowen.caipiao.devicecheck;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         mZxingCode.setMinimumWidth(width);
         mZxingCode.setMinimumHeight(width);
         mZxingCode.setImageBitmap(zxingBitmap);
+
+        //隐藏,可以隐藏但又显示出来了
+        hideBottomUIMenu();
     }
 
     private void initView() {
@@ -123,4 +127,18 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-}
+
+    protected void hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
+    }
